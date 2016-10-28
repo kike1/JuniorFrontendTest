@@ -1,11 +1,78 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <meta charset="UTF-8">
-    <title>Hello!</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>FrontendJuniorJS</title>
+
+    <style type="text/css">
+    	.form-control {width:auto;}
+    </style>
+    <script lang="javascript">
+        function getUser()
+        {
+            var username = document.getElementById("username").value;
+			fetch('https://api.github.com/search/users?q='+username)
+				.then(function(response) { 
+					// Convert to JSON
+					return response.json();
+					}).then(function(j) {
+						console.log(j); 
+						console.log(j.items[0].avatar_url);
+						console.log(j.items[0].login);
+
+						//get avatar and username
+						var avatar = j.items[0].avatar_url;
+						var username = j.items[0].login;
+						document.getElementsByTagName('body')[0].appendChild(setInnerHTML(document.createElement("div"), avatar + username));
+
+						//get repo name
+						var repos_url = j.items[0].repos_url;
+
+						fetch(repos_url)
+							.then(function(response) { 
+								// Convert to JSON
+								return response.json();
+								}).then(function(j) {
+									// Yay, 'j' is a JavaScript object
+									console.log(j); 
+									console.log(j[0].name);
+									console.log(j[0].forks_count);
+									
+								}
+						);
+						//
+
+					}
+			);
+        }
+
+        function setInnerHTML(element, content) {
+			element.innerHTML = content;
+			return element;
+		} 
+
+		
+		
+    </script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
-<body>
+<body class="container">
 
 <h1>Hello!</h1>
+
+
+<form class="form-inline" action="javascript:getUser()">
+  <div class="form-group">
+    <input type="text" class="form-control" id="username" placeholder="Search username">
+    <button class="btn btn-default" type="submit">Search</button>
+  </div>
+</form>
+
+
+<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
 </body>
 </html>
